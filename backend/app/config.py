@@ -1,5 +1,5 @@
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "ReleaseShield"
@@ -9,18 +9,26 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "postgres")
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER", "localhost")
     POSTGRES_PORT: str = os.getenv("POSTGRES_PORT", "5432")
-    POSTGRES_DB: str = os.getenv("POSTGRES_DB", "releaseshield")
+    POSTGRES_DB: str = "releaseshield"
+    
+    # Optional field loaded natively from .env by Pydantic
+    DATABASE_URL: str | None = None
     
     @property
-    def DATABASE_URL(self) -> str:
+    def SQLALCHEMY_DATABASE_URI(self) -> str:
+        # If the user provides a full connection string (e.g. Supabase), use it directly
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
         return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
     
-    GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN", "")
-    LLM_API_KEY: str = os.getenv("LLM_API_KEY", "")
-    LLM_MODEL: str = os.getenv("LLM_MODEL", "gemini-1.5-pro")
+    GITHUB_TOKEN: str = ""
+    LLM_API_KEY: str = ""
+    LLM_MODEL: str = "gemini-1.5-pro"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), ".env"),
+        case_sensitive=True,
+        extra="ignore"
+    )
 
 settings = Settings()
