@@ -51,7 +51,7 @@ def create_git_agent_workflow():
     def should_accept_explanation(state: GitAgentState) -> str:
         if "error" in state and state["error"]:
             return "finalize_report"
-        if state.get("critic_feedback"):
+        if state.get("critic_feedback") and state.get("retries", 0) < 2:
             return "generate_llm_explanation"
         return "finalize_report"
         

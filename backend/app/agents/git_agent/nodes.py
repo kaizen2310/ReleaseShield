@@ -190,7 +190,7 @@ async def evidence_critic_node(state: GitAgentState) -> GitAgentState:
     # Max retries to prevent infinite loops
     if retries >= 2:
         print("Max critic retries reached. Accepting current explanation.")
-        return state
+        return {"critic_feedback": ""}
         
     validation = CriticService.validate_explanation(
         explanation=state.get("llm_explanation", ""),
