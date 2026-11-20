@@ -54,7 +54,7 @@ uv sync
 ```
 3. Initialize the Supabase database (run migrations) and seed it with some historical baseline data:
 ```bash
-uv run alembic upgrade head
+uv run python -m alembic upgrade head
 uv run python -m scripts.collect_historical_releases --repository facebook/react --releases 10
 ```
 
@@ -82,7 +82,7 @@ To run the application, you will need two active terminal windows:
 ### Terminal 1: Backend Server
 ```bash
 cd backend
-uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+uv run python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### Terminal 2: Frontend Server

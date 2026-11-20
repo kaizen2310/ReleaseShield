@@ -2,5 +2,8 @@ from app.db.database import Base
 from app.models.repository import Repository
 from app.models.release import Release
 from app.models.git_metrics import GitMetricsDB
+from app.models.risk_assessment import RiskAssessmentDB
+from app.models.approval import ApprovalRecord
 
-# This file is used to import all models so Alembic can find them in one place
+# Export all models for SQLAlchemy and Alembic
+__all__ = ["Base", "Repository", "Release", "GitMetricsDB", "RiskAssessmentDB", "ApprovalRecord"]
