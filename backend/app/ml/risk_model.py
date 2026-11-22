@@ -215,6 +215,13 @@ class XGBoostRiskModel:
         else:
             pred_score = self._compute_statistical_score(feature_dict)
             
+        # 1b. Safety floor: open blockers must always register measurable risk
+        #     regardless of what the trained model learned from co-varying features.
+        blockers = float(feature_dict.get("open_blockers", 0.0))
+        if blockers > 0:
+            blocker_floor = min(0.08 + blockers * 0.15, 0.95)
+            pred_score = max(pred_score, blocker_floor)
+
         # 2. Calculate Feature Contributions (Risk Drivers)
         raw_contributions = []
         for meta in FEATURE_METADATA:

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 from app.db.database import SessionLocal
 from app.models.approval import ApprovalRecord
@@ -74,7 +74,7 @@ class ApprovalService:
         notes: str
     ) -> HumanApprovalDetails:
         key = cls._key(repository, release)
-        now_iso = datetime.utcnow().isoformat()
+        now_iso = datetime.now(timezone.utc).isoformat()
         
         # Save to memory fallback
         _IN_MEMORY_APPROVALS[key] = {
